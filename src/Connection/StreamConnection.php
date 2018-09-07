@@ -405,7 +405,13 @@ class StreamConnection extends AbstractConnection
             throw new \Exception($errstr, 0, $errno, $errfile, $errline);
         });
 
-        $count = stream_select($r, $w, $e, 10.0);
+        try {
+            $count = stream_select($r, $w, $e, 10.0);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            restore_error_handler();
+        }
         return $count;
     }
 
